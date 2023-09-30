@@ -12,4 +12,19 @@
         from user where id = #{userId}
     </select>
 
+    <select id="selectUserByUsername" resultType="User">
+        select <include refid="selectFields"></include>
+        from user where user_name = #{username}
+    </select>
+
+    <select id="selectUserByEmail" resultType="User">
+        select <include refid="selectFields"></include>
+        from user where email = #{email}
+    </select>
+
+    <insert id="insertUser" keyProperty="id">
+        insert into user(id,user_name, password, salt, email, type, status, activation_code, header_url, create_time)
+         values (#{id},#{username}, #{password},#{salt},#{email},#{type},#{status},#{activationCode},#{headerUrl},#{createTime})
+    </insert>
+
 </mapper>

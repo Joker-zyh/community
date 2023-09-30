@@ -4,11 +4,17 @@ mybatis:
   configuration:
     use-generated-keys: true
     map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 server:
   port: 8080
   servlet:
     context-path: /community
+
+#community
+community:
+  path:
+    domain: http://localhost:8080
 
 
 spring:
@@ -25,3 +31,14 @@ spring:
   thymeleaf:
     cache: false
     mode: LEGACYHTML5
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: 839538011@qq.com
+    password: zjlzilwomzbbbbgf
+    protocol: smtps
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true

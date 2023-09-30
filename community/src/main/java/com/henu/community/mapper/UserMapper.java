@@ -8,4 +8,10 @@ public interface UserMapper {
 
     User selectUserById(Integer userId);
 
+    User selectUserByUsername(String username);
+
+    User selectUserByEmail(String email);
+
+    void insertUser(User user);
+
 }

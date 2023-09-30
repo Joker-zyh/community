@@ -10,6 +10,12 @@ public class UserMapperTest {
     @Autowired
     private UserMapper userMapper;
 
+
+    @Test
+    public void testSelectUserByUsername(){
+        System.out.println(userMapper.selectUserByUsername("niuke"));
+    }
+
     @Test
     public void testSelectUserById(){
         System.out.println(userMapper.selectUserById(11));
