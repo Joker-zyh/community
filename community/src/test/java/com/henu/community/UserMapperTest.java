@@ -22,5 +22,10 @@ public class UserMapperTest {
 
     }
 
+    @Test
+    public void testUpdate(){
+        userMapper.updateUserStatus(158,1);
+    }
+
 
 }

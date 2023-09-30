@@ -2,6 +2,7 @@ package com.henu.community.mapper;
 
 import com.henu.community.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UserMapper {
@@ -13,5 +14,7 @@ public interface UserMapper {
     User selectUserByEmail(String email);
 
     void insertUser(User user);
+
+    void updateUserStatus(@Param("id")Integer id,@Param("status") Integer status);
 
 }

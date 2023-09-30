@@ -53,6 +53,8 @@ public class UserServiceImpl implements UserService {
         if (user.getStatus() == 1){
             return ActivationStatus.ACTIVATION_REPEAT;
         }else if (user.getActivationCode().equals(code)){
+            //激活用户，修改用户status
+            userMapper.updateUserStatus(userId,1);
             return ActivationStatus.ACTIVATION_SUCCESS;
         }else {
             return ActivationStatus.ACTIVATION_FAILURE;
