@@ -42,6 +42,27 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 修改用户头像
+     * @param id
+     * @param headerUrl
+     */
+    @Override
+    public void updateHeaderUrl(int id, String headerUrl) {
+        userMapper.updateHeaderUrlById(id,headerUrl);
+    }
+
+    /**
+     * 修改密码
+     * @param id
+     * @param password
+     */
+    @Override
+    public void updatePassword(int id, String password) {
+        userMapper.updatePasswordById(id,password);
+    }
+
+
+    /**
      * 账号激化
      * @param userId
      * @param code

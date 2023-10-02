@@ -10,6 +10,16 @@ public class UserMapperTest {
     @Autowired
     private UserMapper userMapper;
 
+    @Test
+    public void testUpdatePassword(){
+        userMapper.updatePasswordById(117,"123");
+    }
+
+    @Test
+    public void testUpdateHeaderUrl(){
+        userMapper.updateHeaderUrlById(117,"http://images.nowcoder.com/head/45t.png");
+    }
+
 
     @Test
     public void testSelectUserByUsername(){

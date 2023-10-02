@@ -15,6 +15,7 @@ server:
 community:
   path:
     domain: http://localhost:8080
+    upload: "H:/community_image"
 
 
 spring:

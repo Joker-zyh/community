@@ -17,4 +17,8 @@ public interface UserMapper {
 
     void updateUserStatus(@Param("id")Integer id,@Param("status") Integer status);
 
+    void updateHeaderUrlById(@Param("id") Integer id, @Param("headerUrl") String headerUrl);
+
+    void updatePasswordById(@Param("id")Integer id,@Param("password")String password);
+
 }

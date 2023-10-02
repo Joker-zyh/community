@@ -37,6 +37,15 @@ public class LoginTicketServiceImpl implements LoginTicketService {
     private LoginTicketMapper loginTicketMapper;
 
     /**
+     * 根据ticket令牌获取登陆信息
+     * @param ticket
+     * @return
+     */
+    public LoginTicket getLoginTicket(String ticket){
+        return loginTicketMapper.selectByTicket(ticket);
+    }
+
+    /**
      * 退出
      * @param ticket
      */

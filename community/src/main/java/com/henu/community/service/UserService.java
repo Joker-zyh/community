@@ -12,4 +12,8 @@ public interface UserService {
     Map<String,String> register(User user);
 
     int activation(int userID,String code);
+
+    void updateHeaderUrl(int id,String headerUrl);
+
+    void updatePassword(int id,String password);
 }
