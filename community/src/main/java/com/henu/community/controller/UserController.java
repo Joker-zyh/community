@@ -45,6 +45,14 @@ public class UserController {
     @Resource
     private UserService userService;
 
+    /**
+     * 修改密码
+     * @param oldPw
+     * @param newPw
+     * @param newPw2
+     * @param model
+     * @return
+     */
     @LoginRequired
     @PostMapping("/updatePassword")
     public String updatePw(String oldPw,String newPw,String newPw2,Model model){
