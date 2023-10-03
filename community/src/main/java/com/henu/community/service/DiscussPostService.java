@@ -9,4 +9,6 @@ import java.util.List;
 public interface DiscussPostService {
     List<DiscussPost> findDiscussPost(Integer userId, int page, int pageSize);
     int findDiscussPostRows(Integer userId);
+    void saveDiscussPost(DiscussPost discussPost);
+    DiscussPost findDiscussPostById(Integer id);
 }
