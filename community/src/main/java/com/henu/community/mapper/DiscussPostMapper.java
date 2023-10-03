@@ -13,4 +13,8 @@ public interface DiscussPostMapper {
                                         @Param("pageSize")int pageSize);
 
     int selectDiscussPostRows(@Param("userId") Integer userId);
+
+    void insertDiscussPost(DiscussPost discussPost);
+
+    DiscussPost selectDiscussPostById(Integer id);
 }

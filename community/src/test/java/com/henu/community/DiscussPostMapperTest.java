@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 @SpringBootTest
@@ -15,12 +14,24 @@ public class DiscussPostMapperTest {
     private DiscussPostMapper discussPostMapper;
 
     @Test
-    public void TestSelectDiscussPost(){
+    public void testSelectOneById(){
+        System.out.println(discussPostMapper.selectDiscussPostById(234));
+    }
+
+    @Test
+    public void testSelectDiscussPostPage(){
         List<DiscussPost> discussPosts = discussPostMapper.selectDiscussPost(null, 10, 5);
         discussPosts.forEach(discussPost -> {
             System.out.println(discussPost);
         });
 
         System.out.println(discussPostMapper.selectDiscussPostRows(null));
+    }
+
+    @Test
+    public void testInsert(){
+        DiscussPost discussPost = new DiscussPost();
+        discussPost.setContent("sd");
+        discussPostMapper.insertDiscussPost(discussPost);
     }
 }
