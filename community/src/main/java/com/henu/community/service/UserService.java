@@ -16,4 +16,6 @@ public interface UserService {
     void updateHeaderUrl(int id,String headerUrl);
 
     void updatePassword(int id,String password);
+
+    User findUserByName(String name);
 }

@@ -61,6 +61,15 @@ public class UserServiceImpl implements UserService {
         userMapper.updatePasswordById(id,password);
     }
 
+    /**
+     * 根据姓名查用户
+     * @param name
+     */
+    @Override
+    public User findUserByName(String name) {
+        return userMapper.selectUserByUsername(name);
+    }
+
 
     /**
      * 账号激化
