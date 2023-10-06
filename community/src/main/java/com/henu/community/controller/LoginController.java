@@ -4,7 +4,7 @@ import com.google.code.kaptcha.Producer;
 import com.henu.community.pojo.User;
 import com.henu.community.service.LoginTicketService;
 import com.henu.community.service.UserService;
-import com.henu.community.util.ActivationStatus;
+import com.henu.community.util.constant.ActivationStatus;
 import com.henu.community.util.ExpiredTime;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

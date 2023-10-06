@@ -3,7 +3,7 @@ package com.henu.community.service.ServiceImpl;
 import com.henu.community.mapper.UserMapper;
 import com.henu.community.pojo.User;
 import com.henu.community.service.UserService;
-import com.henu.community.util.ActivationStatus;
+import com.henu.community.util.constant.ActivationStatus;
 import com.henu.community.util.GenerateUUID;
 import com.henu.community.util.MD5;
 import com.henu.community.util.MailClient;

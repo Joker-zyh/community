@@ -14,6 +14,11 @@ public class DiscussPostMapperTest {
     private DiscussPostMapper discussPostMapper;
 
     @Test
+    public void testUpdateCommentCount(){
+        discussPostMapper.updateCommentCount(284,0);
+    }
+
+    @Test
     public void testSelectOneById(){
         System.out.println(discussPostMapper.selectDiscussPostById(234));
     }
