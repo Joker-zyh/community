@@ -1,4 +1,4 @@
-package com.henu.community.util;
+package com.henu.community.util.constant;
 
 public class ActivationStatus {
     //激活成功

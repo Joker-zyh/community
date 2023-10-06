@@ -57,7 +57,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         //3.在模版引擎执行前，将用户信息存入Model中，修改前端代码，让导航栏根据登陆状态显示。
         User user = hostHolder.get();
-        if (user != null){
+        if (user != null && modelAndView != null){
             modelAndView.addObject("loginUser",user);
         }
     }

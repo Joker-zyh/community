@@ -11,4 +11,5 @@ public interface DiscussPostService {
     int findDiscussPostRows(Integer userId);
     void saveDiscussPost(DiscussPost discussPost);
     DiscussPost findDiscussPostById(Integer id);
+    void updateCommentCount(int id,int commentCount);
 }

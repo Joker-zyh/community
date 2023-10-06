@@ -77,5 +77,15 @@ public class DiscussPostServiceImpl implements DiscussPostService {
         return discussPostMapper.selectDiscussPostById(id);
     }
 
+    /**
+     * 修改帖子评论数量
+     * @param id
+     * @param commentCount
+     */
+    @Override
+    public void updateCommentCount(int id, int commentCount) {
+        discussPostMapper.updateCommentCount(id,commentCount);
+    }
+
 
 }
