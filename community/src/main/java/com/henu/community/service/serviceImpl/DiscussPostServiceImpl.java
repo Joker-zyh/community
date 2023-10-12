@@ -1,4 +1,4 @@
-package com.henu.community.service.ServiceImpl;
+package com.henu.community.service.serviceImpl;
 
 
 import com.henu.community.mapper.DiscussPostMapper;

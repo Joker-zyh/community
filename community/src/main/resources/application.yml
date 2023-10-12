@@ -43,3 +43,5 @@ spring:
         smtp:
           ssl:
             enable: true
+  redis:
+    password: 790268
