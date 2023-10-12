@@ -1,11 +1,13 @@
 package com.henu.community.controller;
 
+import com.henu.community.annotation.LoginRequired;
 import com.henu.community.pojo.Comment;
 import com.henu.community.pojo.DiscussPost;
 import com.henu.community.pojo.Page;
 import com.henu.community.pojo.User;
 import com.henu.community.service.CommentService;
 import com.henu.community.service.DiscussPostService;
+import com.henu.community.service.LikeService;
 import com.henu.community.service.UserService;
 import com.henu.community.util.GetJSONString;
 import com.henu.community.util.HostHolder;
@@ -35,6 +37,9 @@ public class DiscussPostController {
 
     @Resource
     private CommentService commentService;
+
+    @Resource
+    private LikeService likeService;
     /**
      * 发布帖子
      * @param title
@@ -72,6 +77,13 @@ public class DiscussPostController {
         User user = userService.findUserById(post.getUserId());
         model.addAttribute("user",user);
 
+        //获取帖子点赞个数
+        Long likeCount = likeService.likeCount(EntityType.ENTITY_TYPE_POST, id);
+        model.addAttribute("likeCount",likeCount);
+        //用户点赞状态
+        int likeStatus = hostHolder.get() == null?0:likeService.likeStatus(hostHolder.get().getId(),EntityType.ENTITY_TYPE_POST,id);
+        model.addAttribute("likeStatus",likeStatus);
+
         //未完待续，回帖
         //完整评论分页
         page.setPath("/discuss/detail/" + id);
@@ -88,6 +100,13 @@ public class DiscussPostController {
                 map.put("comment",comment);
                 User commentUser = userService.findUserById(comment.getUserId());
                 map.put("user",commentUser);
+
+                //获取评论点赞个数
+                Long likeCount2 = likeService.likeCount(EntityType.ENTITY_TYPE_COMMENT, comment.getId());
+                map.put("likeCount",likeCount2);
+                //用户点赞状态
+                int likeStatus2 = hostHolder.get() == null?0:likeService.likeStatus(hostHolder.get().getId(),EntityType.ENTITY_TYPE_COMMENT,comment.getId());
+                map.put("likeStatus",likeStatus2);
 
                 //评论的回复也得存入,不需要分页
                 List<Comment> replys = commentService.findPage(EntityType.ENTITY_TYPE_COMMENT, comment.getId(),
@@ -109,6 +128,12 @@ public class DiscussPostController {
 
                         User target = reply.getTargetId() == 0?null:userService.findUserById(reply.getTargetId());
                         replyMap.put("target",target);
+
+                        Long likeCount3 = likeService.likeCount(EntityType.ENTITY_TYPE_COMMENT, reply.getId());
+                        replyMap.put("likeCount",likeCount3);
+                        //用户点赞状态
+                        int likeStatus3 = hostHolder.get() == null?0:likeService.likeStatus(hostHolder.get().getId(),EntityType.ENTITY_TYPE_COMMENT,reply.getId());
+                        replyMap.put("likeStatus",likeStatus3);
                         //将回复信息存入map
                         replyVOList.add(replyMap);
                     });

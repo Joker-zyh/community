@@ -1,4 +1,4 @@
-package com.henu.community.service.ServiceImpl;
+package com.henu.community.service.serviceImpl;
 
 import com.henu.community.mapper.LoginTicketMapper;
 import com.henu.community.mapper.UserMapper;
@@ -10,7 +10,6 @@ import com.henu.community.util.GenerateUUID;
 import com.henu.community.util.MD5;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.annotation.Resource;
 import java.util.Date;

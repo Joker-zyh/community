@@ -2,10 +2,13 @@ package com.henu.community.controller;
 
 import com.henu.community.annotation.LoginRequired;
 import com.henu.community.pojo.User;
+import com.henu.community.service.FollowService;
+import com.henu.community.service.LikeService;
 import com.henu.community.service.UserService;
 import com.henu.community.util.GenerateUUID;
 import com.henu.community.util.HostHolder;
 import com.henu.community.util.MD5;
+import com.henu.community.util.constant.EntityType;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +47,12 @@ public class UserController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private LikeService likeService;
+
+    @Resource
+    private FollowService followService;
 
     @LoginRequired
     @PostMapping("/updatePassword")
@@ -157,5 +166,39 @@ public class UserController {
     @GetMapping("/setting")
     public String getSetting(){
         return "/site/setting";
+    }
+
+    /**
+     * 获取个人信息页面
+     */
+    @GetMapping("/profile/{userId}")
+    public String getPorfilePage(@PathVariable("userId") int userId,Model model){
+        //个人信息
+        User user = userService.findUserById(userId);
+        if (user == null){
+            throw new RuntimeException("该用户不存在");
+        }
+        model.addAttribute("user",user);
+
+        //得到点赞数量
+        int userLikeCount = likeService.findUserLikeCount(userId);
+        model.addAttribute("userLikeCount",userLikeCount);
+
+        //关注数量
+        Long followerCount = followService.findFollowerCount(userId, EntityType.ENTITY_TYPE_USER);
+        model.addAttribute("followerCount",followerCount);
+
+        //粉丝数量
+        Long followeeCount = followService.findFolloweeCount(userId, EntityType.ENTITY_TYPE_USER);
+        model.addAttribute("followeeCount",followeeCount);
+
+        //是否关注
+        boolean hasFollow = false;
+        if (hostHolder.get() != null){
+            hasFollow = followService.hasFollow(hostHolder.get().getId(),userId,EntityType.ENTITY_TYPE_USER);
+        }
+        model.addAttribute("hasFollow",hasFollow);
+
+        return "site/profile";
     }
 }

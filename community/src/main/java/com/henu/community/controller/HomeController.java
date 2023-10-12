@@ -5,9 +5,12 @@ import com.henu.community.pojo.Page;
 import com.henu.community.pojo.User;
 
 import com.henu.community.service.DiscussPostService;
+import com.henu.community.service.LikeService;
 import com.henu.community.service.UserService;
+import com.henu.community.util.constant.EntityType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -25,6 +28,9 @@ public class HomeController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private LikeService likeService;
+
     @RequestMapping(path = "/index",method = RequestMethod.GET)
     public String getIndexPage(Model model, Page page){
         page.setRows(discussPostService.findDiscussPostRows(null));
@@ -38,6 +44,11 @@ public class HomeController {
                 map.put("post",discussPost);
                 User user = userService.findUserById(discussPost.getUserId());
                 map.put("user",user);
+
+                //查询点赞数量
+                Long likeCount = likeService.likeCount(EntityType.ENTITY_TYPE_POST, discussPost.getId());
+                map.put("likeCount",likeCount);
+
                 discussPostsWithUser.add(map);
             });
         }
@@ -46,5 +57,10 @@ public class HomeController {
 
         model.addAttribute("discussPostsWithUser",discussPostsWithUser);
         return "/index";
+    }
+
+    @GetMapping("/error")
+    public String getErrorPage(){
+        return "/error/500";
     }
 }

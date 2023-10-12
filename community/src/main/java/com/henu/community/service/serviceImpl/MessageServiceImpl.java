@@ -1,9 +1,8 @@
-package com.henu.community.service.ServiceImpl;
+package com.henu.community.service.serviceImpl;
 
 import com.henu.community.mapper.MessageMapper;
 import com.henu.community.pojo.Message;
 import com.henu.community.service.MessageService;
-import com.henu.community.util.HostHolder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
