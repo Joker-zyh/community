@@ -172,7 +172,7 @@ public class UserController {
      * 获取个人信息页面
      */
     @GetMapping("/profile/{userId}")
-    public String getPorfilePage(@PathVariable("userId") int userId,Model model){
+    public String getProfilePage(@PathVariable("userId") int userId,Model model){
         //个人信息
         User user = userService.findUserById(userId);
         if (user == null){
