@@ -1,6 +1,5 @@
 package com.henu.community.service.serviceImpl;
 
-import com.henu.community.mapper.LoginTicketMapper;
 import com.henu.community.mapper.UserMapper;
 import com.henu.community.pojo.LoginTicket;
 import com.henu.community.pojo.User;
@@ -8,7 +7,9 @@ import com.henu.community.service.LoginTicketService;
 import com.henu.community.util.ExpiredTime;
 import com.henu.community.util.GenerateUUID;
 import com.henu.community.util.MD5;
+import com.henu.community.util.RedisKeyUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -32,8 +33,11 @@ public class LoginTicketServiceImpl implements LoginTicketService {
     @Resource
     private UserMapper userMapper;
 
+    /*@Resource
+    private LoginTicketMapper loginTicketMapper;*/
+
     @Resource
-    private LoginTicketMapper loginTicketMapper;
+    private RedisTemplate<String,Object> redisTemplate;
 
     /**
      * 根据ticket令牌获取登陆信息
@@ -41,7 +45,8 @@ public class LoginTicketServiceImpl implements LoginTicketService {
      * @return
      */
     public LoginTicket getLoginTicket(String ticket){
-        return loginTicketMapper.selectByTicket(ticket);
+        String ticketKey = RedisKeyUtil.getTicketKey(ticket);
+        return (LoginTicket) redisTemplate.opsForValue().get(ticketKey);
     }
 
     /**
@@ -49,7 +54,13 @@ public class LoginTicketServiceImpl implements LoginTicketService {
      * @param ticket
      */
     public void logout(String ticket){
-        loginTicketMapper.updateStatusByTicket(ticket,1);
+        /*loginTicketMapper.updateStatusByTicket(ticket,1);*/
+        String ticketKey = RedisKeyUtil.getTicketKey(ticket);
+        LoginTicket loginTicket = (LoginTicket) redisTemplate.opsForValue().get(ticketKey);
+        if (loginTicket != null){
+            loginTicket.setStatus(1);
+            redisTemplate.opsForValue().set(ticketKey,loginTicket);
+        }
     }
 
     /**
@@ -102,7 +113,11 @@ public class LoginTicketServiceImpl implements LoginTicketService {
         loginTicket.setTicket(GenerateUUID.generateUUID());
         loginTicket.setStatus(0);
         loginTicket.setExpired(new Date(System.currentTimeMillis() + expired * 1000));
-        loginTicketMapper.insertLoginTicket(loginTicket);
+        /*loginTicketMapper.insertLoginTicket(loginTicket);*/
+
+        //生成key，存储
+        String ticketKey = RedisKeyUtil.getTicketKey(loginTicket.getTicket());
+        redisTemplate.opsForValue().set(ticketKey,loginTicket);
 
         map.put("ticket",loginTicket.getTicket());
 

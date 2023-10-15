@@ -3,6 +3,7 @@ package com.henu.community.service.serviceImpl;
 import com.henu.community.mapper.UserMapper;
 import com.henu.community.pojo.User;
 import com.henu.community.service.UserService;
+import com.henu.community.util.RedisKeyUtil;
 import com.henu.community.util.constant.ActivationStatus;
 import com.henu.community.util.GenerateUUID;
 import com.henu.community.util.MD5;
@@ -10,6 +11,7 @@ import com.henu.community.util.MailClient;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -19,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -31,6 +34,10 @@ public class UserServiceImpl implements UserService {
     @Resource
     private MailClient mailClient;
 
+    @Resource
+    private RedisTemplate<String,Object> redisTemplate;
+
+
     @Value(value = "${community.path.domain}")
     private String domain;
 
@@ -38,7 +45,14 @@ public class UserServiceImpl implements UserService {
     private String contextPath;
 
     public User findUserById(Integer userId){
-        return userMapper.selectUserById(userId);
+        //先在Redis中查找，若无则去数据库中查找
+        String userKey = RedisKeyUtil.getUserKey(userId);
+        User user = (User) redisTemplate.opsForValue().get(userKey);
+        if (user == null){
+            user = userMapper.selectUserById(userId);
+            redisTemplate.opsForValue().set(userKey,user,3600, TimeUnit.SECONDS);
+        }
+        return user;
     }
 
     /**

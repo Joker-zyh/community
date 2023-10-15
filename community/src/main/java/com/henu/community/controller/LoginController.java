@@ -4,12 +4,15 @@ import com.google.code.kaptcha.Producer;
 import com.henu.community.pojo.User;
 import com.henu.community.service.LoginTicketService;
 import com.henu.community.service.UserService;
+import com.henu.community.util.GenerateUUID;
+import com.henu.community.util.RedisKeyUtil;
 import com.henu.community.util.constant.ActivationStatus;
 import com.henu.community.util.ExpiredTime;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -26,6 +29,7 @@ import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 public class LoginController {
@@ -38,6 +42,9 @@ public class LoginController {
 
     @Resource
     private Producer kaptchaProducer;
+
+    @Resource
+    private RedisTemplate<String,Object> redisTemplate;
 
     @Value(value = "${server.servlet.context-path}")
     private String contextPath;
@@ -65,14 +72,19 @@ public class LoginController {
      * @param code
      * @param rememberMe
      * @param model
-     * @param session
      * @return
      */
     @PostMapping("/login")
     public String login(String username,String password,String code,boolean rememberMe,
-                        Model model,HttpSession session,HttpServletResponse response){
+                        Model model,HttpServletResponse response,@CookieValue(value = "kaptchaOwner",required = false) String kaptchaOwner){
+        //当kaptchaOwner不为空时，获取key，拿到验证码进行比较
+        String kaptchaCode = null;
+        if (StringUtils.isNotBlank(kaptchaOwner)){
+            String kaptchaKey = RedisKeyUtil.getKaptchaKey(kaptchaOwner);
+            kaptchaCode = (String) redisTemplate.opsForValue().get(kaptchaKey);
+        }
+
         //判断验证码
-        String kaptchaCode = (String) session.getAttribute("kaptha");
         if (StringUtils.isBlank(code) || StringUtils.isBlank(kaptchaCode) || !kaptchaCode.equalsIgnoreCase(code)){
             model.addAttribute("codeMsg","验证码错误");
             return "/site/login";
@@ -97,17 +109,26 @@ public class LoginController {
     /**
      * 生成图片验证码
      * @param response
-     * @param session
      */
     @GetMapping("/kaptcha")
-    public void getKaptchaImage(HttpServletResponse response, HttpSession session){
+    public void getKaptchaImage(HttpServletResponse response){
         //生成验证码，生成图片，将验证码放入图片
         //将验证码放入session
         //将图片写入响应
         String text = kaptchaProducer.createText();
         BufferedImage image = kaptchaProducer.createImage(text);
 
-        session.setAttribute("kaptha",text);
+        //session.setAttribute("kaptha",text);
+        //生成key，将验证码存入Redis，设置过期时间
+        String kaptchaOwner = GenerateUUID.generateUUID();
+        String kaptchaKey = RedisKeyUtil.getKaptchaKey(kaptchaOwner);
+        redisTemplate.opsForValue().set(kaptchaKey,text,60, TimeUnit.SECONDS);
+        //将Owner存入Cookie
+        Cookie cookie = new Cookie("kaptchaOwner",kaptchaOwner);
+        cookie.setMaxAge(60);
+        cookie.setPath(contextPath);
+        response.addCookie(cookie);
+
 
         response.setContentType("image/png");
         try {
