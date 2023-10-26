@@ -44,6 +44,11 @@ public class UserServiceImpl implements UserService {
     @Value(value = "${server.servlet.context-path}")
     private String contextPath;
 
+    /**
+     * 根据id查询用户
+     * @param userId
+     * @return
+     */
     public User findUserById(Integer userId){
         //先在Redis中查找，若无则去数据库中查找
         String userKey = RedisKeyUtil.getUserKey(userId);
